@@ -4,7 +4,10 @@
             {{errorMessage}}
         </div>
         <div class="card">
-            <div class="card-header"><h2>Home</h2></div>
+            <div class="card-header">
+                <h2 class="float-left">Home</h2>
+                <a href="/satisfaction" class="btn float-right btn-primary">Satisfaction</a>
+            </div>
 
             <div v-if="list_subscription" class="card-body">
                 <h5>Active subscriptions</h5>

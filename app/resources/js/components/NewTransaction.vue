@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-header">
                 <h2 class="float-left">New Transaction</h2>
-                <a href="/home" class="btn float-right">return</a>
+                <a href="/home" class="btn float-right btn-primary">return</a>
             </div>
             <div class="card-body mb-4 border-bottom">
                 <div class="form-group row">
@@ -49,7 +49,7 @@
 
 <script>
 export default {
-    name: 'newTransaction',
+    name: 'NewTransaction',
     props: {
         token: { value: String},
         user: {value: String},

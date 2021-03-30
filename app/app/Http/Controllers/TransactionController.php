@@ -7,12 +7,15 @@ use App\Models\Subscription;
 use App\Models\Transactions;
 use App\Models\User;
 use App\Providers\BraintreeServiceProvider;
-use Illuminate\Support\Facades\Validator;
+use Braintree\Exception\NotFound;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
+    use Utils;
+
     /**
      * Create a new controller instance.
      *
@@ -26,7 +29,7 @@ class TransactionController extends Controller
     /**
      * Show the new transaction screen.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function new()
     {
@@ -42,7 +45,8 @@ class TransactionController extends Controller
     /**
      * Show the application home.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
+     * @throws NotFound
      */
     public function index()
     {
@@ -68,38 +72,11 @@ class TransactionController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $btservice = new BraintreeServiceProvider();
-        $gateway = $btservice->getGateway();
-        $transaction = $gateway->transaction()->find($id);
-
-        $result = $gateway->subscription()->create([
-            'paymentMethodToken' => $id,
-            'planId' => 'the_plan_id'
-        ]);
-
-        print_r($result);
-
-//        if (in_array($transaction->status, BraintreeServiceProvider::$transactionSuccessStatuses)) {
-//            $message = "Your test transaction has been successfully processed. See the Braintree API response and try again.";
-//        } else {
-//            $message = "Your test transaction has a status of " . $transaction->status . ". See the Braintree API response and try again.";
-//        }
-//
-//        echo $message;
-//        return Artigo::find($id);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
+     * @return false|string
+     * @throws NotFound
      */
     public function subscriptionStore(Request $request)
     {
@@ -151,6 +128,7 @@ class TransactionController extends Controller
     /**
      * cancel subscriptions and disable on db
      * @param Request $request
+     * @return false|string
      */
     public function subscriptionCancel(Request $request)
     {
@@ -187,6 +165,7 @@ class TransactionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
+     * @return false|string
      */
     public function store(Request $request)
     {
@@ -295,28 +274,5 @@ class TransactionController extends Controller
                 "message" => 'Error: ' . $error->code . ": " . $error->message
             ]);
         }
-    }
-
-    /**
-     * validate an array and return error
-     * @param array $arr
-     */
-    private static function fastValidade(array $arr, $data)
-    {
-//        $validar = [];
-//        foreach($arr as $r){
-//            $validar[$r] = 'required';
-//        }
-
-        $validator = Validator::make($data, $arr);
-
-        if ($validator->fails()) {
-            return json_encode([
-                "status" => false,
-                "message" => $validator->errors()->first()
-            ]);
-        }
-
-        return false;
     }
 }

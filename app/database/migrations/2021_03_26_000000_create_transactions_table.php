@@ -54,7 +54,7 @@ class CreateTransactionsTable extends Migration
 
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->integer('question');
+            $table->string('question');
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('answer');
